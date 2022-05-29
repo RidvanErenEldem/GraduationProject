@@ -40,7 +40,7 @@ public class DuckMovement : MonoBehaviour
         if(this.transform.position.y <= -1.5)
         {
             Debug.Log(borderCounter);
-            if(borderCounter == 3)
+            if(borderCounter == howManyTimesDoWeHaveToTeachYouThisLessonOldMan)
             {
                 this.transform.position = new Vector3(rb.position.x, -1.4f, -1);
                 rb.velocity = new Vector2(0f, 15f);
