@@ -5,22 +5,56 @@ using UnityEngine;
 public class DuckMovement : MonoBehaviour
 {
     // Start is called before the first frame update
+    public Rigidbody2D rb;
+    public int howManyTimesDoWeHaveToTeachYouThisLessonOldMan = 0;
+    private int borderCounter;
     void Start()
     {
-        
+        rb = this.GetComponent<Rigidbody2D>();
+    }
+
+    private void OnDestroy() 
+    {
+        Debug.Log("Flew Away");
     }
 
     // Update is called once per frame
     void Update()
     {
         float xPosition = Random.Range(-9,9);
-
-        if(this.transform.position.y < -1.5)
+        float yVelocity = Random.Range(7,12);
+        float xVelocity = Random.Range(-4, 4);
+        
+        
+        if(this.transform.position.x <= -9.18f)
         {
-            xPosition = Random.Range(-9,9);
-            this.transform.position = new Vector3(xPosition, -1, -1);
+            if(xVelocity <= 0)
+                rb.velocity = new Vector2(rb.velocity.x*-1, rb.velocity.y);
+        }
+        if(this.transform.position.x >= 9.18f)
+        {
+            if(xVelocity >= 0)
+               rb.velocity = new Vector2(rb.velocity.x*-1, rb.velocity.y);
+        }
 
-            this.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 10f);
+        if(this.transform.position.y <= -1.5)
+        {
+            Debug.Log(borderCounter);
+            if(borderCounter == 3)
+            {
+                this.transform.position = new Vector3(rb.position.x, -1.4f, -1);
+                rb.velocity = new Vector2(0f, 15f);
+                Destroy(this.gameObject, 0.8f);
+            }
+            else
+            {
+                yVelocity = Random.Range(7,12);
+                xVelocity = Random.Range(-4, 4);
+
+                this.transform.position = new Vector3(rb.position.x, -1.4f, -1);
+                rb.velocity = new Vector2(xVelocity, yVelocity);
+            }
+            borderCounter++;
         }
     }
 }
