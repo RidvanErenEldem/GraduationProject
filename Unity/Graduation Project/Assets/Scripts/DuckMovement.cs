@@ -11,11 +11,15 @@ public class DuckMovement : MonoBehaviour
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        Cursor.visible = false;
     }
 
-    private void OnDestroy() 
+    private void OnMouseOver() 
     {
-        Debug.Log("Flew Away");
+        if(Input.GetMouseButtonDown(0))
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -39,7 +43,6 @@ public class DuckMovement : MonoBehaviour
 
         if(this.transform.position.y <= -1.5)
         {
-            Debug.Log(borderCounter);
             if(borderCounter == howManyTimesDoWeHaveToTeachYouThisLessonOldMan)
             {
                 this.transform.position = new Vector3(rb.position.x, -1.4f, -1);
