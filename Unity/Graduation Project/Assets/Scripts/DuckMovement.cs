@@ -8,6 +8,10 @@ public class DuckMovement : MonoBehaviour
     public Rigidbody2D rb;
     public int howManyTimesDoWeHaveToTeachYouThisLessonOldMan = 0;
     private int borderCounter;
+    [SerializeField] private Animator anim;
+    private float timer;
+
+    private bool duckShooted = false;
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
@@ -18,10 +22,9 @@ public class DuckMovement : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            Destroy(this.gameObject);
+            duckShooted = true;
         }
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -40,8 +43,20 @@ public class DuckMovement : MonoBehaviour
             if(xVelocity >= 0)
                rb.velocity = new Vector2(rb.velocity.x*-1, rb.velocity.y);
         }
-
-        if(this.transform.position.y <= -1.5)
+        if(duckShooted)
+        {
+            timer += Time.deltaTime;
+            anim.SetBool("isDuckShooted", true);
+            rb.gravityScale = 0;
+            rb.velocity = new Vector2(0,0);
+            if(timer >= 2f)
+            {
+                rb.gravityScale = 1;
+                rb.velocity = new Vector2(0, -10f);
+                anim.SetBool("isDuckDown", true);
+            }
+        }
+        if(this.transform.position.y <= -1.5 && !this.anim.GetCurrentAnimatorStateInfo(0).IsName("DuckDown"))
         {
             if(borderCounter == howManyTimesDoWeHaveToTeachYouThisLessonOldMan)
             {
