@@ -49,7 +49,7 @@ public class DuckMovement : MonoBehaviour
             anim.SetBool("isDuckShooted", true);
             rb.gravityScale = 0;
             rb.velocity = new Vector2(0,0);
-            if(timer >= 2f)
+            if(timer >= 1f)
             {
                 rb.gravityScale = 1;
                 rb.velocity = new Vector2(0, -10f);
