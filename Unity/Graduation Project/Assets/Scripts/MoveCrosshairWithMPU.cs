@@ -6,19 +6,6 @@ using System.IO.Ports;
 
 public class MoveCrosshairWithMPU : MonoBehaviour
 {
-    public SerialController serialController;
-    public Vector3 oldRotation;
-    public Vector3 newRotation;
-    public float differenceX;
-    public float differenceY;
-    public bool isClickedButton1;
-    public bool isClickedButton2;
-
-    private int xPosition;
-    private int yPosition;
-
-    private float scaleValueX;
-    private float scaleValueY;
     private int min;
     private int max;
 
@@ -41,7 +28,6 @@ public class MoveCrosshairWithMPU : MonoBehaviour
         min = -180;
         max = 180;
         rb = GetComponent<Rigidbody2D>();
-        serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
     }
 
     // Update is called once per frame
