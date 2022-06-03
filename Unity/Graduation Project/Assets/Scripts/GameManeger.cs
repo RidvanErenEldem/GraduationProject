@@ -9,6 +9,7 @@ public class GameManeger : MonoBehaviour
     void Start()
     {
         greenDuckRigidbody = GameObject.Find("GreenDuck").GetComponent<Rigidbody2D>();
+        redDuckRigidbody = GameObject.Find("RedDuck").GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
