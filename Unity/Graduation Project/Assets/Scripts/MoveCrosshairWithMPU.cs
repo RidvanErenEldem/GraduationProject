@@ -9,7 +9,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     public string whichDuck;
     [SerializeField] public Animator duckAnim;
     public int ammo;
-    private bool isClicking = false;
+    private bool isTriggering = false;
     public static string portName = "COM7";
     public static int baudRate = 115200;
     public float xSensitivity = 35;
@@ -39,26 +39,21 @@ public class MoveCrosshairWithMPU : MonoBehaviour
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)    {
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
         if (collision.gameObject.name == whichDuck)
         {
-            if(isClicking)
-            {
-                timer += Time.deltaTime;
-                duckAnim.SetBool("isDuckShooted", true);
-                duckRigidbody.gravityScale = 0;
-                duckRigidbody.velocity = new Vector2(0,0);
-                if(timer >= 1f)
-                {
-                    duckRigidbody.gravityScale = 1;
-                    duckRigidbody.velocity = new Vector2(0, -10f);
-                    duckAnim.SetBool("isDuckDown", true);
-                }
-            Destroy(this.gameObject, 2f);
-            }
+            isTriggering = true;
         }
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == whichDuck)
+        {
+            isTriggering = false;
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -79,17 +74,25 @@ public class MoveCrosshairWithMPU : MonoBehaviour
 
         transform.position = new Vector3((float)normalizedXValue, (float)normalizedYValue, -2f);
 
-        if(splitValues[4] == "0")
+        if (splitValues[3] == "0")
         {
-            if(ammo <= 0)
-                Debug.Log("You Are Out of Ammo");
+            if (ammo <= 0)
+                Debug.Log("You are out of ammo!");
             else
             {
-                isClicking = true;
+                ammo--;
+                if (isTriggering)
+                {
+                    Debug.Log("Duck Hit!");
+                }
+                else
+                {
+                    Debug.Log("Duck Miss");
+                }
             }
+
         }
-        else
-            isClicking = false;
+
         /*else
         {
             Debug.Log(values);
