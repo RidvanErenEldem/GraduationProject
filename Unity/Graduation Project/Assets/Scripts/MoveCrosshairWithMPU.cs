@@ -10,6 +10,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     [SerializeField] public Animator duckAnim;
     public int ammo;
     private bool isTriggering = false;
+    private bool isDuckHit = false;
     public static string portName = "COM7";
     public static int baudRate = 115200;
     public float xSensitivity = 35;
@@ -84,6 +85,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                 if (isTriggering)
                 {
                     Debug.Log("Duck Hit!");
+                    isDuckHit = true;
                 }
                 else
                 {
@@ -91,6 +93,22 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                 }
             }
 
+        }
+
+        if (isDuckHit)
+        {
+            timer += Time.deltaTime;
+            duckAnim.SetBool("isDuckShooted", true);
+            duckRigidbody.gravityScale = 0;
+            duckRigidbody.velocity = new Vector2(0, 0);
+            if (timer >= 1f)
+            {
+                duckRigidbody.gravityScale = 1;
+                duckRigidbody.velocity = new Vector2(0, -10f);
+                duckAnim.SetBool("isDuckDown", true);
+                isDuckHit = false;
+            }
+            Destroy(GameObject.Find(whichDuck), 2f);
         }
 
         /*else
