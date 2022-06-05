@@ -16,14 +16,6 @@ public class DuckMovement : MonoBehaviour
         rb = this.GetComponent<Rigidbody2D>();
     }
 
-    private void OnMouseOver() 
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            duckShooted = true;
-        }
-    }
-
     void OnDestroy()
     {
         if(duckShooted)
@@ -50,20 +42,7 @@ public class DuckMovement : MonoBehaviour
             if(xVelocity >= 0)
                rb.velocity = new Vector2(rb.velocity.x*-1, rb.velocity.y);
         }
-        if(duckShooted)
-        {
-            timer += Time.deltaTime;
-            anim.SetBool("isDuckShooted", true);
-            rb.gravityScale = 0;
-            rb.velocity = new Vector2(0,0);
-            if(timer >= 1f)
-            {
-                rb.gravityScale = 1;
-                rb.velocity = new Vector2(0, -10f);
-                anim.SetBool("isDuckDown", true);
-            }
-            Destroy(this.gameObject, 2f);
-        }
+        
         if(this.transform.position.y <= -2 && !this.anim.GetCurrentAnimatorStateInfo(0).IsName("DuckDown"))
         {
             if(borderCounter == howManyTimesDoWeHaveToTeachYouThisLessonOldMan)
