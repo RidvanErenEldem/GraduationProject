@@ -14,7 +14,6 @@ public class DuckMovement : MonoBehaviour
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
-        Cursor.visible = false;
     }
 
     private void OnMouseOver() 

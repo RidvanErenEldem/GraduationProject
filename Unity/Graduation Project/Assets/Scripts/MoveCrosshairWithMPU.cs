@@ -7,6 +7,7 @@ using System.IO.Ports;
 public class MoveCrosshairWithMPU : MonoBehaviour
 {
     public string whichDuck;
+    public string whichPlayer;
     [SerializeField] public Animator duckAnim;
     public int ammo;
     private bool isTriggering = false;
@@ -16,24 +17,11 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     public float xSensitivity = 35;
     public float ySensitivity = 25;
     private float timer;
-
-    SerialPort stream = new SerialPort(portName, baudRate);
     Rigidbody2D rb;
     Rigidbody2D duckRigidbody;
     private double normalizedXValue;
     private double normalizedYValue;
     //private bool isCalibrated = false;
-
-    void Awake()
-    {
-        stream.Open();
-    }
-
-    //Closes stream so next time it doesn't create problems 
-    void OnDestroy()
-    {
-        stream.Close();
-    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -56,45 +44,44 @@ public class MoveCrosshairWithMPU : MonoBehaviour
         }
     }
 
+    public void ReadTheData(string data)
+    {
+        string[] splitValues = data.Split(' ');
+        //Debug.Log("NormalizedXValue: " + normalizedXValue + " NormalizedYValue: " + normalizedYValue);
+        if (splitValues[0] == whichPlayer)
+        {
+            normalizedYValue = Convert.ToDouble(splitValues[1]);
+            normalizedXValue = Convert.ToDouble(splitValues[3]);
+            normalizedXValue /= 180;
+            normalizedYValue /= 180;
+
+            normalizedXValue *= -xSensitivity;
+            normalizedYValue *= ySensitivity;
+            transform.position = new Vector3((float)normalizedXValue, (float)normalizedYValue, -2f);
+            if (splitValues[4] == "0")
+            {
+                if (ammo <= 0)
+                    Debug.Log("You are out of ammo!");
+                else
+                {
+                    ammo--;
+                    if (isTriggering)
+                    {
+                        Debug.Log("Duck Hit!");
+                        isDuckHit = true;
+                    }
+                    else
+                    {
+                        Debug.Log("Duck Miss");
+                    }
+                }
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        string values = stream.ReadLine();
-        string[] splitValues = values.Split(' ');
-
-
-        normalizedYValue = Convert.ToDouble(splitValues[0]);
-        normalizedXValue = Convert.ToDouble(splitValues[2]);
-        normalizedXValue /= 180;
-        normalizedYValue /= 180;
-
-        normalizedXValue *= -xSensitivity;
-        normalizedYValue *= ySensitivity;
-
-        //Debug.Log("NormalizedXValue: " + normalizedXValue + " NormalizedYValue: " + normalizedYValue);
-
-        transform.position = new Vector3((float)normalizedXValue, (float)normalizedYValue, -2f);
-
-        if (splitValues[3] == "0")
-        {
-            if (ammo <= 0)
-                Debug.Log("You are out of ammo!");
-            else
-            {
-                ammo--;
-                if (isTriggering)
-                {
-                    Debug.Log("Duck Hit!");
-                    isDuckHit = true;
-                }
-                else
-                {
-                    Debug.Log("Duck Miss");
-                }
-            }
-
-        }
-
         if (isDuckHit)
         {
             timer += Time.deltaTime;
@@ -110,31 +97,5 @@ public class MoveCrosshairWithMPU : MonoBehaviour
             }
             Destroy(GameObject.Find(whichDuck), 2f);
         }
-
-        /*else
-        {
-            Debug.Log(values);
-            if(values == "Unity Begin")
-                isCalibrated = true;
-        }*/
-
-
-        // string message = serialController.ReadSerialMessage();
-
-        // if (message == null)
-        //     return;
-
-        // string[] separatedMessages = message.Split(' ');
-        // xPosition = Convert.ToInt32(separatedMessages[0]);
-        // yPosition = Convert.ToInt32(separatedMessages[2]);
-        // if(separatedMessages[3] == "1")
-        //     isClickedButton1 = false;
-        // else
-        //     isClickedButton1 = true;
-
-        // if(separatedMessages[4] == "1")
-        //     isClickedButton2 = false;
-        // else
-        //     isClickedButton1 = true;
     }
 }
