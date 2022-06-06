@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crosshair : MonoBehaviour
+public class Camera : MonoBehaviour
 {
     private AudioSource source;
     // Start is called before the first frame update
@@ -10,7 +10,6 @@ public class Crosshair : MonoBehaviour
     {
         source = GameObject.Find("Audio Source").GetComponent<AudioSource>();
     }
-
     // Update is called once per frame
     void Update()
     {
