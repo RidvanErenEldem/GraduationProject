@@ -8,9 +8,11 @@ using TMPro;
 
 public class MoveCrosshairWithMPU : MonoBehaviour
 {
+    public int ammoPerRount = 3;
     public string whichDuck;
     public string whichPlayer;
-    private TextMeshProUGUI score;
+    private TextMeshProUGUI scoreGUI;
+    private TextMeshProUGUI ammoGUI;
     [SerializeField] public Animator duckAnim;
     public int ammo;
     private bool isTriggering = false;
@@ -32,9 +34,15 @@ public class MoveCrosshairWithMPU : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
         if(whichPlayer == "0")
-            score = GameObject.Find("player1Score").GetComponent<TextMeshProUGUI>();
+        {
+            ammoGUI = GameObject.Find("player1Ammo").GetComponent<TextMeshProUGUI>();
+            scoreGUI = GameObject.Find("player1Score").GetComponent<TextMeshProUGUI>();
+        }
         else
-            score = GameObject.Find("player2Score").GetComponent<TextMeshProUGUI>();
+        {
+            ammoGUI = GameObject.Find("player2Ammo").GetComponent<TextMeshProUGUI>();
+            scoreGUI = GameObject.Find("player2Score").GetComponent<TextMeshProUGUI>();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -74,10 +82,12 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                 else
                 {
                     ammo--;
+                    int playerNum = Convert.ToInt32(whichPlayer) + 1;
+                    ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");
                     if (isTriggering)
                     {
                         currentPoint += (int)Math.Round(roundPoint);
-                        score.SetText(currentPoint.ToString());
+                        scoreGUI.SetText(currentPoint.ToString());
                         Debug.Log(currentPoint);
                         isDuckHit = true;
                     }
