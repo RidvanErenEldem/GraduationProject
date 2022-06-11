@@ -3,11 +3,14 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using System;
 using System.IO.Ports;
+using TMPro;
+
 
 public class MoveCrosshairWithMPU : MonoBehaviour
 {
     public string whichDuck;
     public string whichPlayer;
+    private TextMeshProUGUI score;
     [SerializeField] public Animator duckAnim;
     public int ammo;
     private bool isTriggering = false;
@@ -21,11 +24,17 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     Rigidbody2D duckRigidbody;
     private double normalizedXValue;
     private double normalizedYValue;
+    private float roundPoint = 500;
+    public int currentPoint;
     //private bool isCalibrated = false;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
+        if(whichDuck == "0")
+            score = GameObject.Find("player1Score").GetComponent<TextMeshProUGUI>();
+        else
+            score = GameObject.Find("player2Score").GetComponent<TextMeshProUGUI>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -57,7 +66,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
 
             normalizedXValue *= -xSensitivity;
             normalizedYValue *= ySensitivity;
-            transform.position = new Vector3((float)normalizedXValue, (float)normalizedYValue, -2f);
+            transform.position = new Vector3((float)normalizedXValue, (float)normalizedYValue, -3f);
             if (splitValues[4] == "0")
             {
                 if (ammo <= 0)
@@ -67,12 +76,10 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                     ammo--;
                     if (isTriggering)
                     {
-                        Debug.Log("Duck Hit!");
+                        currentPoint += (int)Math.Round(roundPoint);
+                        score.SetText(currentPoint.ToString());
+                        Debug.Log(currentPoint);
                         isDuckHit = true;
-                    }
-                    else
-                    {
-                        Debug.Log("Duck Miss");
                     }
                 }
             }
@@ -97,5 +104,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
             }
             Destroy(GameObject.Find(whichDuck), 2f);
         }
+        else
+            roundPoint -= Time.deltaTime*0.1f*roundPoint;
     }
 }
