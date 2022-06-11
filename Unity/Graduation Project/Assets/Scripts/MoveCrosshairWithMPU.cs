@@ -23,6 +23,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     public float ySensitivity = 25;
     private float timer;
     Rigidbody2D rb;
+    private AudioSource audioSource;
     Rigidbody2D duckRigidbody;
     private double normalizedXValue;
     private double normalizedYValue;
@@ -31,6 +32,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     //private bool isCalibrated = false;
     void Start()
     {
+        audioSource = GameObject.Find("Audio Source").GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
         if(whichPlayer == "0")
@@ -81,10 +83,11 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                     Debug.Log("You are out of ammo!");
                 else
                 {
+                    audioSource.Play();
                     ammo--;
                     int playerNum = Convert.ToInt32(whichPlayer) + 1;
                     ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");
-                    if (isTriggering)
+                    if (isTriggering && !isDuckHit)
                     {
                         currentPoint += (int)Math.Round(roundPoint);
                         scoreGUI.SetText(currentPoint.ToString());
@@ -112,7 +115,6 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                 duckAnim.SetBool("isDuckDown", true);
                 isDuckHit = false;
             }
-            Destroy(GameObject.Find(whichDuck), 2f);
         }
         else
             roundPoint -= Time.deltaTime*0.1f*roundPoint;

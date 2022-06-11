@@ -6,8 +6,9 @@ public class DuckMovement : MonoBehaviour
 {
     // Start is called before the first frame update
     public Rigidbody2D rb;
+    public bool runOnce = true;
     public int howManyTimesDoWeHaveToTeachYouThisLessonOldMan = 0;
-    private int borderCounter;
+    public int borderCounter;
     [SerializeField] private Animator anim;
     private float timer;
     public bool duckShooted = false;
@@ -15,22 +16,11 @@ public class DuckMovement : MonoBehaviour
     {
         rb = this.GetComponent<Rigidbody2D>();
     }
-
-    void OnDestroy()
-    {
-        if(duckShooted)
-            Debug.Log("Duck Hit Successful!");
-        else
-            Debug.Log("Duck Flew Away!");
-    }
     // Update is called once per frame
     void Update()
     {
-        
-        float xPosition = Random.Range(-9,9);
         float yVelocity = Random.Range(7,12);
-        float xVelocity = Random.Range(-4, 4);
-        
+        float xVelocity = Random.Range(-5, 5);
         
         if(this.transform.position.x <= -9.19f)
         {
@@ -49,17 +39,27 @@ public class DuckMovement : MonoBehaviour
             {
                 this.transform.position = new Vector3(rb.position.x, -1.95f, -1);
                 rb.velocity = new Vector2(0f, 15f);
-                Destroy(this.gameObject, 0.9f);
+                borderCounter = 0;
             }
             else
             {
                 yVelocity = Random.Range(7,12);
-                xVelocity = Random.Range(-4, 4);
+                xVelocity = Random.Range(-5, 5);
 
                 this.transform.position = new Vector3(rb.position.x, -1.95f, -1);
                 rb.velocity = new Vector2(xVelocity, yVelocity);
             }
             borderCounter++;
+        }
+        else if(this.transform.position.y <= -5.89 || this.transform.position.y >= 5.89)
+        {
+            if(runOnce)
+            {
+                GameManager.duckCounter++;
+                runOnce = false;
+            }
+            rb.gravityScale = 0;
+            rb.velocity = new Vector2(0, 0);
         }
     }
 }
