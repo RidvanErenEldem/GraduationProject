@@ -31,7 +31,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
-        if(whichDuck == "0")
+        if(whichPlayer == "0")
             score = GameObject.Find("player1Score").GetComponent<TextMeshProUGUI>();
         else
             score = GameObject.Find("player2Score").GetComponent<TextMeshProUGUI>();
