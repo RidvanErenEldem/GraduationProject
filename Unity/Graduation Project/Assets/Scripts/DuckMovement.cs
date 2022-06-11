@@ -12,6 +12,8 @@ public class DuckMovement : MonoBehaviour
     [SerializeField] private Animator anim;
     private float timer;
     public bool duckShooted = false;
+    private float randomYVelocity;
+    private float randomXVelocity;
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
@@ -19,22 +21,20 @@ public class DuckMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float yVelocity = Random.Range(7,12);
-        float xVelocity = Random.Range(-5, 5);
-        
         if(this.transform.position.x <= -9.19f)
         {
-            if(xVelocity <= 0)
+            if(rb.velocity.x <= 0)
                 rb.velocity = new Vector2(rb.velocity.x*-1, rb.velocity.y);
         }
         if(this.transform.position.x >= 9.19f)
         {
-            if(xVelocity >= 0)
+            if(rb.velocity.x >= 0)
                rb.velocity = new Vector2(rb.velocity.x*-1, rb.velocity.y);
         }
         
         if(this.transform.position.y <= -2 && !this.anim.GetCurrentAnimatorStateInfo(0).IsName("DuckDown"))
         {
+            Debug.Log(this.transform.name +  " - " +borderCounter);
             if(borderCounter == howManyTimesDoWeHaveToTeachYouThisLessonOldMan)
             {
                 this.transform.position = new Vector3(rb.position.x, -1.95f, -1);
@@ -43,16 +43,17 @@ public class DuckMovement : MonoBehaviour
             }
             else
             {
-                yVelocity = Random.Range(7,12);
-                xVelocity = Random.Range(-5, 5);
+                randomYVelocity = Random.Range(7,12);
+                randomXVelocity = Random.Range(-5, 5);
 
                 this.transform.position = new Vector3(rb.position.x, -1.95f, -1);
-                rb.velocity = new Vector2(xVelocity, yVelocity);
+                rb.velocity = new Vector2(randomXVelocity, randomYVelocity);
                 borderCounter++;
             }
         }
         else if(this.transform.position.y <= -5.89 || this.transform.position.y >= 5.89)
         {
+            borderCounter = 0;
             rb.gravityScale = 0;
             rb.velocity = new Vector2(0, 0);
         }
