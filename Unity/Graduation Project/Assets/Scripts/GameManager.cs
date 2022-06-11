@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Threading;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static int duckCounter = 0;
+    [SerializeField] public Animator greenDuckAnim;
+    [SerializeField] public Animator redDuckAnim;
+    public static bool pointReset = false;
     public Rigidbody2D greenDuckRigidbody;
     public Rigidbody2D redDuckRigidbody;
     public MoveCrosshairWithMPU playerOne;
@@ -37,17 +40,25 @@ public class GameManager : MonoBehaviour
         playerOne.ReadTheData(values);
         playerTwo.ReadTheData(values);
         string[] splitValues = values.Split(' ');
-        Debug.Log(duckCounter);
-        if(duckCounter == 2)
+        if((greenDuckRigidbody.transform.position.y <= -5.89 || greenDuckRigidbody.transform.position.y >= 5.89)
+            && (redDuckRigidbody.transform.position.y <= -5.89 || redDuckRigidbody.transform.position.y >= 5.89))
         {
             float greenDuckXPosition = Random.Range(-9,9);
             float redDuckXPosition = Random.Range(-9,9);
+            
+            redDuckAnim.SetBool("isDuckRespawn", true);
+            redDuckAnim.SetBool("isDuckShooted",false);
+
+            greenDuckAnim.SetBool("isDuckRespawn", true);
+            greenDuckAnim.SetBool("isDuckShooted",false);
 
             greenDuckRigidbody.transform.position = new Vector3(greenDuckXPosition, -1.89f,-1);
             redDuckRigidbody.transform.position = new Vector3(redDuckXPosition,-1.89f,-1);
             greenDuckRigidbody.gravityScale = 1.0f;
             redDuckRigidbody.gravityScale = 1.0f;
-            duckCounter = 0;
+            pointReset = true;
         }
+        else
+            pointReset = false;
     }
 }

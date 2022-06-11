@@ -48,16 +48,11 @@ public class DuckMovement : MonoBehaviour
 
                 this.transform.position = new Vector3(rb.position.x, -1.95f, -1);
                 rb.velocity = new Vector2(xVelocity, yVelocity);
+                borderCounter++;
             }
-            borderCounter++;
         }
         else if(this.transform.position.y <= -5.89 || this.transform.position.y >= 5.89)
         {
-            if(runOnce)
-            {
-                GameManager.duckCounter++;
-                runOnce = false;
-            }
             rb.gravityScale = 0;
             rb.velocity = new Vector2(0, 0);
         }

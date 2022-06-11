@@ -9,6 +9,7 @@ using TMPro;
 public class MoveCrosshairWithMPU : MonoBehaviour
 {
     public int ammoPerRount = 3;
+    public int maxPointPerRount = 700;
     public string whichDuck;
     public string whichPlayer;
     private TextMeshProUGUI scoreGUI;
@@ -27,11 +28,12 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     Rigidbody2D duckRigidbody;
     private double normalizedXValue;
     private double normalizedYValue;
-    private float roundPoint = 500;
+    private float roundPoint;
     public int currentPoint;
     //private bool isCalibrated = false;
     void Start()
     {
+        roundPoint = maxPointPerRount;
         audioSource = GameObject.Find("Audio Source").GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
@@ -79,6 +81,9 @@ public class MoveCrosshairWithMPU : MonoBehaviour
             transform.position = new Vector3((float)normalizedXValue, (float)normalizedYValue, -3f);
             if (splitValues[4] == "0")
             {
+                duckAnim.SetBool("isDuckRespawn", false);
+                duckAnim.SetBool("isDuckShooted", false);
+                duckAnim.SetBool("isDuckDown", false);
                 if (ammo <= 0)
                     Debug.Log("You are out of ammo!");
                 else
@@ -87,11 +92,10 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                     ammo--;
                     int playerNum = Convert.ToInt32(whichPlayer) + 1;
                     ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");
-                    if (isTriggering && !isDuckHit)
+                    if (isTriggering && duckAnim.GetCurrentAnimatorStateInfo(0).IsName("DuckIdle") && !isDuckHit)
                     {
                         currentPoint += (int)Math.Round(roundPoint);
                         scoreGUI.SetText(currentPoint.ToString());
-                        Debug.Log(currentPoint);
                         isDuckHit = true;
                     }
                 }
@@ -113,10 +117,19 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                 duckRigidbody.gravityScale = 1;
                 duckRigidbody.velocity = new Vector2(0, -10f);
                 duckAnim.SetBool("isDuckDown", true);
+                duckAnim.SetBool("isDuckShooted", false);
+                timer = 0f;
                 isDuckHit = false;
             }
         }
-        else
+        else if(!GameManager.pointReset)
             roundPoint -= Time.deltaTime*0.1f*roundPoint;
+        else
+        {
+            roundPoint = maxPointPerRount;
+            ammo = ammoPerRount;
+            int playerNum = Convert.ToInt32(whichPlayer) + 1;
+            ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");
+        }
     }
 }
