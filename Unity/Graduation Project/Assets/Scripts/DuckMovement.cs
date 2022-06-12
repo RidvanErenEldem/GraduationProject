@@ -34,7 +34,6 @@ public class DuckMovement : MonoBehaviour
         
         if(this.transform.position.y <= -2 && !this.anim.GetCurrentAnimatorStateInfo(0).IsName("DuckDown"))
         {
-            Debug.Log(this.transform.name +  " - " +borderCounter);
             if(borderCounter == howManyTimesDoWeHaveToTeachYouThisLessonOldMan)
             {
                 this.transform.position = new Vector3(rb.position.x, -1.95f, -1);

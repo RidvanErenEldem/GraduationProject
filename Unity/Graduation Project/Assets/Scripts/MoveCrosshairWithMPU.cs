@@ -24,7 +24,8 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     public float ySensitivity = 25;
     private float timer;
     Rigidbody2D rb;
-    private AudioSource audioSource;
+    private AudioSource gunShot;
+    private AudioSource gunEmpty;
     Rigidbody2D duckRigidbody;
     private double normalizedXValue;
     private double normalizedYValue;
@@ -34,7 +35,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     void Start()
     {
         roundPoint = maxPointPerRount;
-        audioSource = GameObject.Find("Audio Source").GetComponent<AudioSource>();
+        gunShot = GameObject.Find("GunShot").GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
         if(whichPlayer == "0")
@@ -47,6 +48,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
             ammoGUI = GameObject.Find("player2Ammo").GetComponent<TextMeshProUGUI>();
             scoreGUI = GameObject.Find("player2Score").GetComponent<TextMeshProUGUI>();
         }
+        gunEmpty = GameObject.Find("EmptyGun").GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -85,10 +87,10 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                 duckAnim.SetBool("isDuckShooted", false);
                 duckAnim.SetBool("isDuckDown", false);
                 if (ammo <= 0)
-                    Debug.Log("You are out of ammo!");
+                    gunEmpty.Play();
                 else
                 {
-                    audioSource.Play();
+                    gunShot.Play();
                     ammo--;
                     int playerNum = Convert.ToInt32(whichPlayer) + 1;
                     ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");

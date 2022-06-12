@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -11,8 +12,11 @@ public class GameManager : MonoBehaviour
     private float timer = 0f;
     private int roundCount = 0;
     private bool resetArduino = false;
+    private TextMeshProUGUI player1Score;
+    private TextMeshProUGUI player2Score;
     [SerializeField] public Animator greenDuckAnim;
     [SerializeField] public Animator redDuckAnim;
+    [SerializeField] public HighScore highScore;
     private Image roundImage;
     private TextMeshProUGUI roundBaseText;
     private TextMeshProUGUI roundCounterText;
@@ -31,6 +35,8 @@ public class GameManager : MonoBehaviour
         roundImage = GameObject.Find("RoundImage").GetComponent<Image>();
         roundBaseText = GameObject.Find("RoundBaseText").GetComponent<TextMeshProUGUI>();
         roundCounterText = GameObject.Find("RoundCounterText").GetComponent<TextMeshProUGUI>();
+        player1Score = GameObject.Find("player1Score").GetComponent<TextMeshProUGUI>();
+        player2Score = GameObject.Find("player2Score").GetComponent<TextMeshProUGUI>();
     }
 
     void Awake()
@@ -47,6 +53,12 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (roundCount == 11)
+        {
+            highScore.player1Score = System.Convert.ToInt32(player1Score.text);
+            highScore.player2Score = System.Convert.ToInt32(player2Score.text);
+            SceneManager.LoadScene("EndGame");
+        }
         string values = stream.ReadLine();
         playerOne.ReadTheData(values);
         playerTwo.ReadTheData(values);
@@ -58,7 +70,7 @@ public class GameManager : MonoBehaviour
         if ((greenDuckRigidbody.transform.position.y <= -5.87 || greenDuckRigidbody.transform.position.y >= 5.87)
             && (redDuckRigidbody.transform.position.y <= -5.87 || redDuckRigidbody.transform.position.y >= 5.87))
         {
-            if (timer >= 2f)
+            if (timer >= 1f)
             {
                 roundCount++;
                 float greenDuckXPosition = Random.Range(-9, 9);
@@ -80,7 +92,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                if(resetArduino)
+                if (resetArduino)
                 {
                     stream.Close();
                     stream.Open();
@@ -89,12 +101,12 @@ public class GameManager : MonoBehaviour
                 roundImage.enabled = true;
                 roundBaseText.enabled = true;
                 roundCounterText.enabled = true;
-                roundCounterText.SetText(roundCount.ToString());
+                roundCounterText.SetText($"<align=\"center\">{roundCount.ToString()}</align>");
                 timer += Time.deltaTime;
             }
         }
         else
             pointReset = false;
-
+        
     }
 }
