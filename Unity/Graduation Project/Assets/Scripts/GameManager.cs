@@ -2,12 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    private float timer = 0f;
+    private int roundCount = 0;
+    private bool resetArduino = false;
     [SerializeField] public Animator greenDuckAnim;
     [SerializeField] public Animator redDuckAnim;
+    private Image roundImage;
+    private TextMeshProUGUI roundBaseText;
+    private TextMeshProUGUI roundCounterText;
     public static bool pointReset = false;
     public Rigidbody2D greenDuckRigidbody;
     public Rigidbody2D redDuckRigidbody;
@@ -20,6 +28,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        roundImage = GameObject.Find("RoundImage").GetComponent<Image>();
+        roundBaseText = GameObject.Find("RoundBaseText").GetComponent<TextMeshProUGUI>();
+        roundCounterText = GameObject.Find("RoundCounterText").GetComponent<TextMeshProUGUI>();
     }
 
     void Awake()
@@ -39,26 +50,51 @@ public class GameManager : MonoBehaviour
         string values = stream.ReadLine();
         playerOne.ReadTheData(values);
         playerTwo.ReadTheData(values);
-        string[] splitValues = values.Split(' ');
-        if((greenDuckRigidbody.transform.position.y <= -5.89 || greenDuckRigidbody.transform.position.y >= 5.89)
-            && (redDuckRigidbody.transform.position.y <= -5.89 || redDuckRigidbody.transform.position.y >= 5.89))
+        Debug.Log(timer);
+
+        roundImage.enabled = false;
+        roundBaseText.enabled = false;
+        roundCounterText.enabled = false;
+        if ((greenDuckRigidbody.transform.position.y <= -5.87 || greenDuckRigidbody.transform.position.y >= 5.87)
+            && (redDuckRigidbody.transform.position.y <= -5.87 || redDuckRigidbody.transform.position.y >= 5.87))
         {
-            float greenDuckXPosition = Random.Range(-9,9);
-            float redDuckXPosition = Random.Range(-9,9);
-            
-            redDuckAnim.SetBool("isDuckRespawn", true);
-            redDuckAnim.SetBool("isDuckShooted",false);
+            if (timer >= 2f)
+            {
+                roundCount++;
+                float greenDuckXPosition = Random.Range(-9, 9);
+                float redDuckXPosition = Random.Range(-9, 9);
 
-            greenDuckAnim.SetBool("isDuckRespawn", true);
-            greenDuckAnim.SetBool("isDuckShooted",false);
+                redDuckAnim.SetBool("isDuckRespawn", true);
+                redDuckAnim.SetBool("isDuckShooted", false);
 
-            greenDuckRigidbody.transform.position = new Vector3(greenDuckXPosition, -1.89f,-1);
-            redDuckRigidbody.transform.position = new Vector3(redDuckXPosition,-1.89f,-1);
-            greenDuckRigidbody.gravityScale = 1.0f;
-            redDuckRigidbody.gravityScale = 1.0f;
-            pointReset = true;
+                greenDuckAnim.SetBool("isDuckRespawn", true);
+                greenDuckAnim.SetBool("isDuckShooted", false);
+
+                greenDuckRigidbody.transform.position = new Vector3(greenDuckXPosition, -1.89f, -1);
+                redDuckRigidbody.transform.position = new Vector3(redDuckXPosition, -1.89f, -1);
+                greenDuckRigidbody.gravityScale = 1.0f;
+                redDuckRigidbody.gravityScale = 1.0f;
+                pointReset = true;
+                timer = 0f;
+                resetArduino = true;
+            }
+            else
+            {
+                if(resetArduino)
+                {
+                    stream.Close();
+                    stream.Open();
+                }
+                resetArduino = false;
+                roundImage.enabled = true;
+                roundBaseText.enabled = true;
+                roundCounterText.enabled = true;
+                roundCounterText.SetText(roundCount.ToString());
+                timer += Time.deltaTime;
+            }
         }
         else
             pointReset = false;
+
     }
 }
