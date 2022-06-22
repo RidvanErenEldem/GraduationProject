@@ -4,19 +4,14 @@ using UnityEngine;
 
 public class DuckMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
     public Rigidbody2D rb;
-    public bool runOnce = true;
-    public int howManyTimesDoWeHaveToTeachYouThisLessonOldMan = 0;
+    public int howManyTimesDoWeHaveToTeachYouThisLessonOldMan = 3;
     public int borderCounter;
     [SerializeField] private Animator anim;
-    private float timer;
-    public bool duckShooted = false;
     private float randomYVelocity;
     private float randomXVelocity;
     void Start()
     {
-        rb = this.GetComponent<Rigidbody2D>();
     }
     // Update is called once per frame
     void Update()

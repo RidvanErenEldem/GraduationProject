@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     public MoveCrosshairWithMPU playerTwo;
     public static string portName = "COM7";
     public static int baudRate = 115200;
-    private AudioSource audioSource;
     SerialPort stream = new SerialPort(portName, baudRate);
 
     void Start()
@@ -62,7 +61,6 @@ public class GameManager : MonoBehaviour
         string values = stream.ReadLine();
         playerOne.ReadTheData(values);
         playerTwo.ReadTheData(values);
-        Debug.Log(timer);
 
         roundImage.enabled = false;
         roundBaseText.enabled = false;
@@ -107,6 +105,5 @@ public class GameManager : MonoBehaviour
         }
         else
             pointReset = false;
-        
     }
 }

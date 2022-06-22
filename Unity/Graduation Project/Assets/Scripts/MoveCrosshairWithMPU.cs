@@ -8,8 +8,8 @@ using TMPro;
 
 public class MoveCrosshairWithMPU : MonoBehaviour
 {
-    public int ammoPerRount = 3;
-    public int maxPointPerRount = 700;
+    public int ammoPerRound = 3;
+    public int maxPointPerRound = 700;
     public string whichDuck;
     public string whichPlayer;
     private TextMeshProUGUI scoreGUI;
@@ -18,8 +18,6 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     public int ammo;
     private bool isTriggering = false;
     private bool isDuckHit = false;
-    public static string portName = "COM7";
-    public static int baudRate = 115200;
     public float xSensitivity = 35;
     public float ySensitivity = 25;
     private float timer;
@@ -31,10 +29,9 @@ public class MoveCrosshairWithMPU : MonoBehaviour
     private double normalizedYValue;
     private float roundPoint;
     public int currentPoint;
-    //private bool isCalibrated = false;
     void Start()
     {
-        roundPoint = maxPointPerRount;
+        roundPoint = maxPointPerRound;
         gunShot = GameObject.Find("GunShot").GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         duckRigidbody = GameObject.Find(whichDuck).GetComponent<Rigidbody2D>();
@@ -93,7 +90,7 @@ public class MoveCrosshairWithMPU : MonoBehaviour
                     gunShot.Play();
                     ammo--;
                     int playerNum = Convert.ToInt32(whichPlayer) + 1;
-                    ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");
+                    ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRound}");
                     if (isTriggering && duckAnim.GetCurrentAnimatorStateInfo(0).IsName("DuckIdle") && !isDuckHit)
                     {
                         currentPoint += (int)Math.Round(roundPoint);
@@ -128,10 +125,10 @@ public class MoveCrosshairWithMPU : MonoBehaviour
             roundPoint -= Time.deltaTime*0.1f*roundPoint;
         else
         {
-            roundPoint = maxPointPerRount;
-            ammo = ammoPerRount;
+            roundPoint = maxPointPerRound;
+            ammo = ammoPerRound;
             int playerNum = Convert.ToInt32(whichPlayer) + 1;
-            ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRount}");
+            ammoGUI.SetText($"PLAYER {playerNum} AMMO\n{ammo}/{ammoPerRound}");
         }
     }
 }
