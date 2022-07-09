@@ -61,7 +61,6 @@ public class EndGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(timer);
         if (timer >= 5.825f)
         {
             player1Base.enabled = true;
